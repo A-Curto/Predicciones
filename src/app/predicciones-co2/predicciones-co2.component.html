@@ -1,1 +1,33 @@
 <p>predicciones-co2 works!</p>
+
+<div class="container">
+  <div class="row my-2">
+    <div class="col-2">
+      <button class="btn btn-secondary w-100" (click)="crearVisor()">Crear Visor</button>
+    </div>
+  </div>
+  <div class="row my-2">
+    <div class="col-2">
+      <button class="btn btn-secondary w-100" *ngIf="tfvisor != null"
+              (click)="ocultarMostrarVisor()">{{(tfvisor.isOpen()) ? 'Ocultar' : 'Mostrar'}} Visor
+      </button>
+    </div>
+  </div>
+  <div class="row my-2">
+    <div class="col-2">
+      <button class="btn btn-secondary w-100" (click)="cargarDatos()">Cargar Datos</button>
+    </div>
+    <div class="col-3">
+      <div class="btn-group">
+        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Paises
+        </button>
+        <div class="dropdown-menu dropdown-menu-right">
+          <button class="dropdown-item" type="button">España</button>
+          <button class="dropdown-item disble" type="button">Portugal</button>
+          <button class="dropdown-item disble" type="button">Francia</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
