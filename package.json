@@ -22,8 +22,10 @@
     "@tensorflow/tfjs": "^1.7.4",
     "@tensorflow/tfjs-vis": "^1.4.0",
     "bootstrap": "^4.5.0",
+    "jquery": "^3.5.1",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
+    "vega-lite": "^4.12.1",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {

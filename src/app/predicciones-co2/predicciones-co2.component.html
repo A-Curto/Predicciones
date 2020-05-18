@@ -1,33 +1,62 @@
-<p>predicciones-co2 works!</p>
-
 <div class="container">
-  <div class="row my-2">
-    <div class="col-2">
-      <button class="btn btn-secondary w-100" (click)="crearVisor()">Crear Visor</button>
-    </div>
-  </div>
-  <div class="row my-2">
-    <div class="col-2">
-      <button class="btn btn-secondary w-100" *ngIf="tfvisor != null"
-              (click)="ocultarMostrarVisor()">{{(tfvisor.isOpen()) ? 'Ocultar' : 'Mostrar'}} Visor
-      </button>
-    </div>
-  </div>
-  <div class="row my-2">
-    <div class="col-2">
-      <button class="btn btn-secondary w-100" (click)="cargarDatos()">Cargar Datos</button>
-    </div>
-    <div class="col-3">
-      <div class="btn-group">
-        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Paises
-        </button>
-        <div class="dropdown-menu dropdown-menu-right">
-          <button class="dropdown-item" type="button">España</button>
-          <button class="dropdown-item disble" type="button">Portugal</button>
-          <button class="dropdown-item disble" type="button">Francia</button>
+
+  <div class="row my-4">
+    <div class="col-5">
+      <h3>Controles del Visor</h3>
+      <div class="row p-2 border rounded-lg">
+        <div class="col">
+          <button class="btn btn-secondary w-100" (click)="crearVisor()">Crear Visor</button>
+        </div>
+        <div class="col">
+          <button class="btn btn-secondary w-100" *ngIf="tfvisor != null"
+                  (click)="ocultarMostrarVisor()">{{(tfvisor.isOpen()) ? 'Ocultar' : 'Mostrar'}} Visor
+          </button>
         </div>
       </div>
     </div>
   </div>
+
+  <div class="row my-4">
+    <div class="col-5">
+      <h3>Selcción y carga de datos</h3>
+      <div class="row p-2 border rounded-lg">
+        <div class="col">
+          <button class="btn btn-secondary w-100" (click)="cargarDatos()">Cargar Datos</button>
+        </div>
+        <div class="col">
+          <select class="custom-select" (change)="seleccionPais($event.target.value)">
+            <option value="" disabled>Selecciona un pais</option>
+            <option *ngFor="let pais of paises" ngValue="pais">{{pais.value}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row my-4">
+    <div class="col-5">
+      <h3>Entrenamiento</h3>
+      <div class="row p-2 border rounded-lg">
+        <div class="col">
+          <button class="btn btn-secondary w-100" (click)="entrenarModelo()">
+            Entrenamiento del Modelo
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row my-4">
+    <div class="col-5">
+      <h3>Predicciones</h3>
+      <div class="row p-2 border rounded-lg">
+        <div class="col">
+          <button class="btn btn-secondary w-100" (click)="testModel()">
+            Testear Modelo
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
