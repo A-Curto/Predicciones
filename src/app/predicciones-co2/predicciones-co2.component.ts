@@ -73,38 +73,30 @@ export class PrediccionesCo2Component implements OnInit {
           435.38, 430.33, 434.95, 430.24, 437.14, 439.17, 442.69, 432.57, 422.75, 416.56, 397.99,
           405.75, 381.77, 382.05, 382.98, 351.69, 358.30, 359.88, 363.71];
         break;
-
       default:
         alert('Debes seleccionar un país para cagar los datos.')
     }
-    this.mostrarDatosCargadosVisor(this.anos, this.emisiones);
+    this.mostrarDatosCargadosVisor();
   }
 
-  mostrarDatosCargadosVisor(xData, yData) {
+  mostrarDatosCargadosVisor() {
     // En caso de que se cargen otros datos limpio datosEntrada
     this.datosEntrada = [];
-    for (let i in xData) {
+    for (let i in this.anos) {
       this.datosEntrada.push({
-        index: xData[i],
-        value: yData[i]
-      })
+        index: this.anos[i], value: this.emisiones[i]
+      });
     }
 
     if (isNull(this.tfvisor)) {
       this.crearVisor();
     }
 
+    // Mostrar en el visor los datos en una gráfica de barras
     tfvis.render.barchart(
-      {
-        name: 'CO2/año',
-        tab: 'Datos de entrada'
-      },
+      {name: 'CO2/año', tab: 'Datos de entrada'},
       this.datosEntrada,
-      {
-        height: 400,
-        xLabel: 'Año',
-        yLabel: 'Millones de toneladas CO2'
-      }
+      {height: 400, xLabel: 'Año', yLabel: 'Millones de toneladas CO2'}
     );
   }
 
@@ -117,9 +109,8 @@ export class PrediccionesCo2Component implements OnInit {
     // capa son las salidas a la siguiente, es una simple pila de capas sin bifurcaciones ni saltos)
     this.model = tf.sequential();
 
-
-    // Capa de entrada, recibe un valor y tiene cien nurona.
-    this.model.add(tf.layers.dense({inputShape: [1], units: 100}));
+    // Capa de entrada, recibe un valor y tiene 50 nuronas.
+    this.model.add(tf.layers.dense({inputShape: [1], units: 50}));
     // Capa intermedia con 50 neuronas y función de activación relu (función encargada de asignar pesos a cada neurona)
     this.model.add(tf.layers.dense({units: 50, activation: 'relu'}));
     // Capa de salida como solo obtendremos un valor tiene una neurona.
@@ -140,11 +131,12 @@ export class PrediccionesCo2Component implements OnInit {
     // Los tamaños de lote comunes tienden a estar en el rango de 32-512.
     const batchSize = 32;
     // Número de veces que se procesarán todos los datos para el entrenamiento.
-    const epochs = 200;
+    const epochs = 300;
     // Definición de nombre de las métricas y la pestaña donde serán mostradas
     const container = {
       name: 'Progreso del entrenamiento', tab: 'Entrenamiento'
     };
+    //Guarda los valores de perdida
     const history = [];
     // Metricas que serán mostradas en gráficas
     const metrics = ['loss'];
@@ -153,9 +145,7 @@ export class PrediccionesCo2Component implements OnInit {
     // el tamaño de subconjuntos, el número de iteraciones del entrenamiento, shuffle es para barajar
     // los datos y callbacks mostrará datos del entrenamiento definidos en la función mostrarEntrenamiento()
     await this.model.fit(inputs, labels, {
-      batchSize: batchSize,
-      epochs: epochs,
-      shuffle: true,
+      batchSize: batchSize, epochs: epochs, shuffle: true,
       callbacks: {
         onEpochEnd: (epoch, log) => {
           history.push(log);
@@ -181,7 +171,6 @@ export class PrediccionesCo2Component implements OnInit {
       // Paso 2. Convertir los datos en Tensores
       const inputs = datos.map(d => d.index);
       const labels = datos.map(d => d.value);
-
       const inputTensor = tf.tensor2d(inputs, [inputs.length, 1]);
       const labelTensor = tf.tensor2d(labels, [labels.length, 1]);
 
@@ -190,32 +179,26 @@ export class PrediccionesCo2Component implements OnInit {
       const inputMin = inputTensor.min();
       const labelMax = labelTensor.max();
       const labelMin = labelTensor.min();
-
       const inputsNormalizados = inputTensor.sub(inputMin).div(inputMax.sub(inputMin));
       const labelsNormalizados = labelTensor.sub(labelMin).div(labelMax.sub(labelMin));
 
       return {
-        inputs: inputsNormalizados,
-        labels: labelsNormalizados,
+        inputs: inputsNormalizados, labels: labelsNormalizados,
         // Devuelve los límites min / max para que podamos usarlos más tarde.
-        inputMax,
-        inputMin,
-        labelMax,
-        labelMin,
+        inputMax, inputMin, labelMax, labelMin,
       };
     });
   }
 
   /**
-   * Mostrará los valores del entrenamiento y los valores generados de ejemplo
+   * Mostrará los valores originales y valores predecidos por el modelo para la evaluación del modelo
    */
-  private testModel() {
+  private testModelo() {
     const {inputMax, inputMin, labelMin, labelMax} = this.datosNormalizados;
 
     // Generar predicciones para un rango uniforme de números entre 0 y 1;
     // Desnormalizamos los datos realizando la inversión de escala min-max que hicimos anteriormente.
     const [xs, preds] = tf.tidy(() => {
-
       // xs contine 10 valores generados de ejemplo
       // tslint:disable-next-line:no-shadowed-variable
       const xs = tf.linspace(0, 1, 10);
@@ -225,18 +208,16 @@ export class PrediccionesCo2Component implements OnInit {
       const preds = this.model.predict(xs.reshape([10, 1]));
 
       // Desnormalización de los datos
-      const unNormXs = xs
-        .mul(inputMax.sub(inputMin))
-        .add(inputMin);
+      const unNormXs = xs.mul(inputMax.sub(inputMin)).add(inputMin);
 
       // Desnormalización de los datos predecidos
       // @ts-ignore
-      const unNormPreds = preds.mul(labelMax.sub(labelMin))
-        .add(labelMin);
+      const unNormPreds = preds.mul(labelMax.sub(labelMin)).add(labelMin);
 
-      // .dataSync () es un método que podemos usar para obtener una matriz de tipos de los valores almacenados en un tensor.
+      // .dataSync () es un método que podemos usar para obtener una matriz de tipos de los valores
+      // almacenados en un tensor.
       // Esto nos permite procesar esos valores en JavaScript normal.
-      // Esta es una versión sincrónica del método .data () que generalmente se prefiere.
+      // Esta es una versión sincrona del método data() que generalmente es preferible su uso.
       return [unNormXs.dataSync(), unNormPreds.dataSync()];
     });
 
@@ -249,6 +230,8 @@ export class PrediccionesCo2Component implements OnInit {
     const originalPoints = this.datosEntrada.map(d => ({
       x: d.index, y: d.value,
     }));
+
+    console.log(originalPoints);
 
     // Resderizado en el visor de los datos de entrada y los predecidos para comprobar la eficiencia del modelo.
     tfvis.render.scatterplot(

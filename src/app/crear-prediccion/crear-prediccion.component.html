@@ -1,0 +1,104 @@
+<div class="container">
+  <div class="alert alert-info text-center my-2">Están disponibles de forma predeterminada unos datos de prueba.</div>
+
+  <div class="row my-4">
+    <div class="col-5">
+      <h3>Controles del Visor</h3>
+      <div class="row p-2 border rounded-lg">
+        <div class="col">
+          <button class="btn btn-secondary w-100" (click)="crearVisor()">Crear Visor</button>
+        </div>
+        <div class="col">
+          <button class="btn btn-secondary w-100" *ngIf="tfvisor != null"
+                  (click)="ocultarMostrarVisor()">{{(tfvisor.isOpen()) ? 'Ocultar' : 'Mostrar'}} Visor
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row my-4">
+    <div class="col-5">
+      <h3>Datos de entrada:</h3>
+      <div class="row p-2 border rounded-lg">
+        <div class="col">
+          <div class="row my-2">
+            <div class="col">
+              <label for="xEntrada">Valores del eje X: </label>
+              <input type="text" id="xENtrada" [(ngModel)]="xEntrada">
+            </div>
+          </div>
+          <div class="row my-2">
+            <div class="col">
+              <label for="yEntrada">Valores del eje Y: </label>
+              <input type="text" id="yEntrada" [(ngModel)]="yEntrada">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row my-4">
+    <div class="col-5">
+      <h3>Variar parámetros del entrenamiento:</h3>
+      <div class="row p-2 border rounded-lg">
+        <div class="col">
+          <div class="row my-2">
+            <div class="col">
+              <label for="capas">Capas: </label>
+              <input type="number" id="capas" [(ngModel)]="capas">
+            </div>
+          </div>
+          <div class="row my-2">
+            <div class="col">
+              <label for="neuronas">Neuronas: </label>
+              <input type="number" id="neuronas" [(ngModel)]="neuronas">
+            </div>
+          </div>
+          <div class="row my-2">
+            <div class="col">
+              <label for="epocas">Epocas de entrenamiento: </label>
+              <input type="number" id="epocas" [(ngModel)]="epocas">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row my-4">
+    <div class="col-5">
+      <h3>Entrenamiento</h3>
+      <div class="row p-2 border rounded-lg">
+        <div class="col">
+          <button class="btn btn-secondary w-100" (click)="entrenarModelo()">
+            Entrenar del Modelo
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row my-4">
+    <div class="col-5">
+      <h3>Predicciones</h3>
+      <div class="row p-2 border rounded-lg">
+        <div class="col">
+          <div class="row my-2">
+            <div class="col">
+              <label for="xDeYpredecida">Valores del eje X con ellos predeciras la Y: </label>
+              <input type="text" id="xDeYpredecida" [(ngModel)]="xDeYpredecida">
+            </div>
+          </div>
+          <div class="row my-2">
+            <div class="col">
+              <button class="btn btn-secondary w-100" (click)="realizarPrediccion()">Realizar predicción</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
